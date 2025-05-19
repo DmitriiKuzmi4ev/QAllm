@@ -5,127 +5,360 @@
     <title>Ollama Test Generator</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap @5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter :wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 
     <!-- Prism.js для подсветки синтаксиса -->
-    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.css " rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css" rel="stylesheet" />
 
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f1f3f4;
-            color: #202124;
+            background-color: #f8fafc;
+            color: var(--dark-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .hero {
             text-align: center;
-            padding: 60px 0;
-            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            padding: 80px 0;
+            background: var(--gradient);
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.05)" d="M0,0 L100,0 L100,100 L0,100 Z" /></svg>');
+            background-size: cover;
+        }
+
+        .hero h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
         .container-main {
             max-width: 900px;
-            margin-top: 40px;
+            margin: -40px auto 40px;
             background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+            transition: transform 0.3s ease;
         }
 
-        h1 {
+        .container-main:hover {
+            transform: translateY(-5px);
+        }
+
+        h1, h2, h3 {
             font-weight: 600;
+            color: var(--dark-color);
         }
 
         label {
             font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
         }
 
         textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 140px;
             width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            outline: none;
+        }
+
+        .form-select, .form-control {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
 
         .btn-primary {
-            background-color: #1a73e8;
+            background: var(--gradient);
             border: none;
-            transition: background-color 0.3s ease;
+            padding: 14px 24px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary:hover {
-            background-color: #1557b0;
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(30deg);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover::after {
+            left: 100%;
         }
 
         .form-check-input:checked {
-            background-color: #1a73e8;
-            border-color: #1a73e8;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
 
         footer {
-            margin-top: 60px;
+            margin-top: auto;
+            padding: 20px 0;
             text-align: center;
-            color: #aaa;
+            color: #64748b;
             font-size: 0.9rem;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            background-color: #f1f5f9;
         }
 
         /* Стиль для вывода кода */
-        pre {
+        .code-block {
             background-color: #1e1e1e;
             color: #dcdcdc;
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-        }
-
-        code {
-            font-family: 'Courier New', Courier, monospace;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.6s ease-out;
         }
 
         .code-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #2d2d2d;
-            padding: 0.5rem 1rem;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            background-color: #252526;
+            padding: 12px 20px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
         }
 
         .code-title {
-            color: #8a8a8a;
-            font-size: 0.9rem;
+            color: #d4d4d4;
+            font-size: 0.95rem;
             margin: 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .copy-btn {
             background-color: #333;
             color: #fff;
             border: none;
-            font-size: 0.8rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .copy-btn:hover {
-            background-color: #555;
+            background-color: #444;
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        pre {
+            margin: 0;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            line-height: 1.6;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Прелоадер */
+        .loader {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .loader.active {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loader-text {
+            font-size: 1.2rem;
+            color: var(--dark-color);
+            font-weight: 500;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Анимация радио-кнопок */
+        .form-check-inline {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-check-input {
+            transition: all 0.3s ease;
+        }
+
+        .form-check-label {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .form-check-input:checked ~ .form-check-label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Анимация при переключении между UI/API */
+        .toggle-section {
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        /* Пульсирующая анимация для кнопки */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body>
+
+<!-- Прелоадер -->
+<div class="loader" id="loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Генерируем тест... Это займет несколько секунд</div>
+</div>
 
 <!-- Hero Section -->
 <section class="hero">
@@ -136,10 +369,10 @@
 </section>
 
 <!-- Main Form -->
-<div class="container container-main fade-in">
-    <form action="/generate" method="post" th:object="${request}" class="mb-4">
+<div class="container container-main">
+    <form action="/generate" method="post" th:object="${request}" class="mb-4" id="generatorForm">
         <!-- Тип теста -->
-        <div class="mb-3">
+        <div class="mb-4">
             <label for="testType" class="form-label">Тип теста:</label>
             <select id="testType" name="testType" class="form-select" onchange="toggleFramework(this.value)">
                 <option value="UI">UI Тест</option>
@@ -148,63 +381,77 @@
         </div>
 
         <!-- Фреймворк для UI -->
-        <div class="mb-3" id="frameworkGroup">
+        <div class="mb-4 toggle-section" id="frameworkGroup">
             <label class="form-label">Фреймворк:</label><br/>
-            <div class="form-check form-check-inline">
+            <div class="form-check form-check-inline animate__animated animate__fadeIn">
                 <input class="form-check-input" type="radio" name="framework" id="selenide" value="Selenide" checked>
-                <label class="form-check-label" for="selenide">Selenide</label>
+                <label class="form-check-label" for="selenide">
+                    <i class="fas fa-desktop me-2"></i>Selenide
+                </label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="form-check form-check-inline animate__animated animate__fadeIn">
                 <input class="form-check-input" type="radio" name="framework" id="playwright" value="Playwright">
-                <label class="form-check-label" for="playwright">Playwright</label>
+                <label class="form-check-label" for="playwright">
+                    <i class="fas fa-play me-2"></i>Playwright
+                </label>
             </div>
         </div>
 
         <!-- Фреймворк для API -->
-        <div class="mb-3" id="apiFrameworkGroup" style="display: none;">
+        <div class="mb-4 toggle-section" id="apiFrameworkGroup" style="display: none;">
             <label class="form-label">Библиотека:</label><br/>
-            <div class="form-check form-check-inline">
+            <div class="form-check form-check-inline animate__animated animate__fadeIn">
                 <input class="form-check-input" type="radio" name="apiFramework" id="restassured" value="RestAssured" checked>
-                <label class="form-check-label" for="restassured">RestAssured</label>
+                <label class="form-check-label" for="restassured">
+                    <i class="fas fa-server me-2"></i>RestAssured
+                </label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="form-check form-check-inline animate__animated animate__fadeIn">
                 <input class="form-check-input" type="radio" name="apiFramework" id="retrofit" value="Retrofit">
-                <label class="form-check-label" for="retrofit">Retrofit</label>
+                <label class="form-check-label" for="retrofit">
+                    <i class="fas fa-code me-2"></i>Retrofit
+                </label>
             </div>
         </div>
 
         <!-- Описание теста -->
-        <div class="mb-3">
+        <div class="mb-4">
             <label for="prompt" class="form-label">Введите описание теста:</label>
-            <textarea id="prompt" name="prompt" class="form-control"
+            <textarea id="prompt" name="prompt" class="form-control animate__animated animate__fadeIn"
                       placeholder="Например: Создай тест на Selenide, который открывает example.com и проверяет заголовок страницы."
                       required></textarea>
         </div>
 
         <!-- Кнопка -->
-        <button type="submit" class="btn btn-primary w-100 btn-lg mt-2">🚀 Сгенерировать тест</button>
+        <button type="submit" class="btn btn-primary w-100 btn-lg mt-2 pulse">
+            <i class="fas fa-rocket me-2"></i>🚀 Сгенерировать тест
+        </button>
     </form>
 
     <!-- Результат -->
-    <div th:if="${generatedCode}" class="mt-4 text-start">
+    <div th:if="${generatedCode}" class="code-block animate__animated animate__fadeInUp">
         <div class="code-header">
-            <p class="code-title mb-0">📄 Сгенерированный тест</p>
-            <button class="copy-btn" onclick="copyToClipboard()">Копировать</button>
+            <p class="code-title">
+                <i class="fas fa-file-code"></i>Сгенерированный тест
+            </p>
+            <button class="copy-btn" onclick="copyToClipboard()">
+                <i class="far fa-copy"></i>Копировать
+            </button>
         </div>
         <pre><code class="language-java" th:text="${generatedCode}"></code></pre>
     </div>
 </div>
 
-<footer class="mt-auto">
+<footer>
     &copy; 2025 Ollama Test Generator • Генерация автотестов локально
 </footer>
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap @5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Prism.js -->
-<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js "></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-java.min.js "></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-java.min.js"></script>
 
 <!-- JS для динамики -->
 <script>
@@ -215,20 +462,57 @@
         if (value === 'UI') {
             uiGroup.style.display = 'block';
             apiGroup.style.display = 'none';
+            // Анимация появления
+            uiGroup.classList.add('animate__fadeIn');
+            setTimeout(() => uiGroup.classList.remove('animate__fadeIn'), 1000);
         } else {
             uiGroup.style.display = 'none';
             apiGroup.style.display = 'block';
+            // Анимация появления
+            apiGroup.classList.add('animate__fadeIn');
+            setTimeout(() => apiGroup.classList.remove('animate__fadeIn'), 1000);
         }
     }
 
     function copyToClipboard() {
         const code = document.querySelector("pre code").innerText;
         navigator.clipboard.writeText(code).then(() => {
-            alert("✅ Код скопирован в буфер обмена");
+            // Красивое уведомление вместо alert
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i>Скопировано!';
+            copyBtn.style.backgroundColor = '#4CAF50';
+
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.style.backgroundColor = '#333';
+            }, 2000);
         }).catch(err => {
-            alert("❌ Не удалось скопировать код: " + err);
+            console.error("Не удалось скопировать код: ", err);
         });
     }
+
+    // Обработка формы с прелоадером
+    document.getElementById('generatorForm').addEventListener('submit', function(e) {
+        const loader = document.getElementById('loader');
+        loader.classList.add('active');
+
+        // Имитация задержки (удалите в реальном проекте)
+        setTimeout(() => {
+            loader.classList.remove('active');
+        }, 3000);
+    });
+
+    // Анимация при наведении на элементы формы
+    document.querySelectorAll('.form-check-inline').forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.classList.add('animate__pulse');
+        });
+
+        item.addEventListener('mouseleave', function() {
+            this.classList.remove('animate__pulse');
+        });
+    });
 </script>
 
 </body>
