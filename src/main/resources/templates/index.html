@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Ollama Test Generator</title>
+    <title>QA helper</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -363,69 +363,93 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="container">
-        <h1 class="display-5 fw-bold">🤖 Ollama Test Generator</h1>
-        <p class="lead mt-3">Создавайте автотесты по описанию. Локально. Бесплатно.</p>
+        <h1 class="display-5 fw-bold">QA Helper</h1>
+        <p class="lead mt-3">Удобная генерация автотестов</p>
     </div>
 </section>
 
 <!-- Main Form -->
 <div class="container container-main">
-    <form action="/generate" method="post" th:object="${request}" class="mb-4" id="generatorForm">
-        <!-- Тип теста -->
-        <div class="mb-4">
-            <label for="testType" class="form-label">Тип теста:</label>
-            <select id="testType" name="testType" class="form-select" onchange="toggleFramework(this.value)">
-                <option value="UI">UI Тест</option>
-                <option value="API">API Тест</option>
-            </select>
-        </div>
-
-        <!-- Фреймворк для UI -->
-        <div class="mb-4 toggle-section" id="frameworkGroup">
-            <label class="form-label">Фреймворк:</label><br/>
-            <div class="form-check form-check-inline animate__animated animate__fadeIn">
-                <input class="form-check-input" type="radio" name="framework" id="selenide" value="Selenide" checked>
-                <label class="form-check-label" for="selenide">
-                    <i class="fas fa-desktop me-2"></i>Selenide
-                </label>
+    <!-- Main Form -->
+    <div class="container container-main">
+        <form action="/generate" method="post" th:object="${request}" class="mb-4" id="generatorForm">
+            <!-- Тип теста -->
+            <div class="mb-4">
+                <label for="testType" class="form-label">Тип теста:</label>
+                <select id="testType" name="testType" class="form-select" onchange="toggleFramework(this.value)">
+                    <option value="UI">UI Тест</option>
+                    <option value="API">API Тест</option>
+                </select>
             </div>
-            <div class="form-check form-check-inline animate__animated animate__fadeIn">
-                <input class="form-check-input" type="radio" name="framework" id="playwright" value="Playwright">
-                <label class="form-check-label" for="playwright">
-                    <i class="fas fa-play me-2"></i>Playwright
-                </label>
-            </div>
-        </div>
 
-        <!-- Фреймворк для API -->
-        <div class="mb-4 toggle-section" id="apiFrameworkGroup" style="display: none;">
-            <label class="form-label">Библиотека:</label><br/>
-            <div class="form-check form-check-inline animate__animated animate__fadeIn">
-                <input class="form-check-input" type="radio" name="apiFramework" id="restassured" value="RestAssured" checked>
-                <label class="form-check-label" for="restassured">
-                    <i class="fas fa-server me-2"></i>RestAssured
-                </label>
+            <!-- Фреймворк для UI -->
+            <div class="mb-4 toggle-section" id="frameworkGroup">
+                <label class="form-label">Фреймворк:</label><br/>
+                <div class="form-check form-check-inline animate__animated animate__fadeIn">
+                    <input class="form-check-input" type="radio" name="framework" id="selenide" value="Selenide" checked>
+                    <label class="form-check-label" for="selenide">
+                        <i class="fas fa-desktop me-2"></i>Selenide
+                    </label>
+                </div>
+                <div class="form-check form-check-inline animate__animated animate__fadeIn">
+                    <input class="form-check-input" type="radio" name="framework" id="playwright" value="Playwright">
+                    <label class="form-check-label" for="playwright">
+                        <i class="fas fa-play me-2"></i>Playwright
+                    </label>
+                </div>
             </div>
-            <div class="form-check form-check-inline animate__animated animate__fadeIn">
-                <input class="form-check-input" type="radio" name="apiFramework" id="retrofit" value="Retrofit">
-                <label class="form-check-label" for="retrofit">
-                    <i class="fas fa-code me-2"></i>Retrofit
-                </label>
+
+            <!-- Фреймворк для API -->
+            <div class="mb-4 toggle-section" id="apiFrameworkGroup" style="display: none;">
+                <label class="form-label">Библиотека:</label><br/>
+                <div class="form-check form-check-inline animate__animated animate__fadeIn">
+                    <input class="form-check-input" type="radio" name="apiFramework" id="restassured" value="RestAssured" checked>
+                    <label class="form-check-label" for="restassured">
+                        <i class="fas fa-server me-2"></i>RestAssured
+                    </label>
+                </div>
+                <div class="form-check form-check-inline animate__animated animate__fadeIn">
+                    <input class="form-check-input" type="radio" name="apiFramework" id="retrofit" value="Retrofit">
+                    <label class="form-check-label" for="retrofit">
+                        <i class="fas fa-code me-2"></i>Retrofit
+                    </label>
+                </div>
             </div>
-        </div>
 
-        <!-- Описание теста -->
-        <div class="mb-4">
-            <label for="prompt" class="form-label">Введите описание теста:</label>
-            <textarea id="prompt" name="prompt" class="form-control animate__animated animate__fadeIn"
-                      placeholder="Например: Создай тест на Selenide, который открывает example.com и проверяет заголовок страницы."
-                      required></textarea>
-        </div>
+            <!--Язык -->
+            <div class="mb-4 toggle-section" id="programmingLanguage">
+                <label class="form-label">Язык программирования:</label><br/>
+                <div class="form-check form-check-inline animate__animated animate__fadeIn">
+                    <input class="form-check-input" type="radio" name="language" id="java" value="Java" checked>
+                    <label class="form-check-label" for="java">
+                        <i class="fas fa-server me-2"></i>Java
+                    </label>
+                </div>
+                <div class="form-check form-check-inline animate__animated animate__fadeIn">
+                    <input class="form-check-input" type="radio" name="language" id="python" value="Python">
+                    <label class="form-check-label" for="python">
+                        <i class="fas fa-code me-2"></i>Python
+                    </label>
+                </div>
+                <div class="form-check form-check-inline animate__animated animate__fadeIn">
+                    <input class="form-check-input" type="radio" name="language" id="go" value="GoLang">
+                    <label class="form-check-label" for="go">
+                        <i class="fas fa-code me-2"></i>Go
+                    </label>
+                </div>
+            </div>
 
-        <!-- Кнопка -->
-        <button type="submit" class="btn btn-primary w-100 btn-lg mt-2 pulse">
-            <i class="fas fa-rocket me-2"></i>🚀 Сгенерировать тест
-        </button>
+            <!-- Описание теста -->
+            <div class="mb-4">
+                <label for="prompt" class="form-label">Введите описание теста:</label>
+                <textarea id="prompt" name="prompt" class="form-control animate__animated animate__fadeIn"
+                          placeholder="Например: Создай тест на Selenide, который открывает example.com и проверяет заголовок страницы."
+                          required></textarea>
+            </div>
+            <!-- Кнопка -->
+            <button type="submit" class="btn btn-primary w-100 btn-lg mt-2 pulse">
+                <i class="fas fa-rocket me-2"></i>🚀 Сгенерировать тест
+            </button>
     </form>
 
     <!-- Результат -->

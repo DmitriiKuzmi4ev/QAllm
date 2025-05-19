@@ -9,64 +9,48 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-/**
- * Сервис для генерации автотестов через Ollama API
- */
 @Service
 public class OllamaService {
 
     private static final String OLLAMA_URL = "http://localhost:11434/api/chat";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /**
-     * Генерирует Java-код теста по промпту пользователя
-     *
-     * @param userPrompt — описание, которое вводит пользователь
-     * @param framework  — фреймворк, который нужно использовать (например, Selenide, Playwright, RestAssured)
-     * @return сгенерированный Java-код или сообщение об ошибке
-     */
-    public String generateTest(String userPrompt, String framework) {
+    public String generateTestWithLanguage(String userPrompt, String framework, String language) {
         try {
-            // 1. Экранируем пользовательский промпт
             String safeUserPrompt = escapeJsonString(userPrompt);
 
-            // 2. Системный промпт с подстановкой фреймворка
+            // Динамический системный промпт с подстановкой языка и фреймворка
             String systemPrompt = """
                 Вы — Senior QA Automation Engineer.
-                Генерируйте чистые и понятные автотесты на Java с использованием %s фреймворка.
+                Генерируйте автотесты на %s с использованием %s.
                 Строго следуйте этим правилам:
-
-                1. Используйте аннотации JUnit 5 и Allure TestOps.
-                2. Используйте методы фреймворка, соответствующие выбранной технологии.
-                3. Добавляйте комментарии, объясняющие, что делает тест.
-                4. Форматируйте код с правильными отступами и разрывами строк.
-                5. Возвращайте ТОЛЬКО Java-код — без объяснений и лишнего текста.
-                6. Написанный тест также описывайте в формате cucumber scenario
-
-                Пример формата:
-                import org.junit.jupiter.api.*;
+                
+                1. Используйте соответствующие аннотации и библиотеки (%s).
+                2. Добавляйте комментарии, объясняющие, что делает тест.
+                3. Форматируйте код с отступами.
+                4. Возвращайте ТОЛЬКО код — без лишнего текста.
+                5. Также описывайте тест в формате cucumber scenario
+                6. При создания шага теста используй allure.step(шаг, лямбда)
+                
+                Пример:
                 import io.qameta.allure.*;
-                import static com.codeborne.selenide.Selenide.*;
-
+                import org.junit.jupiter.api.*;
+                
                 @Epic("UI Тесты")
                 @Feature("Проверка страницы")
                 public class GeneratedTest {
-            
-
+                
                     @Test
                     @Story("Проверка заголовка")
                     void testExample() {
-                        // Проверка заголовка
                         Assert.assertEquals(title(), "Example Domain");
                     }
                 }
                 """;
 
-            // 3. Подставляем фреймворк в системный промпт и экранируем его
-            String formattedSystemPrompt = String.format(systemPrompt, framework);
+            String formattedSystemPrompt = String.format(systemPrompt, language, framework, getTestingLibrary(framework, language));
             String safeSystemPrompt = escapeJsonString(formattedSystemPrompt);
 
-            // 4. Формируем JSON-тело запроса
             String jsonBody = String.format("""
                 {
                   "model": "llama3",
@@ -78,7 +62,6 @@ public class OllamaService {
                 }
                 """, safeSystemPrompt, safeUserPrompt);
 
-            // 5. Отправляем запрос к Ollama
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(OLLAMA_URL))
@@ -88,18 +71,12 @@ public class OllamaService {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // 6. Парсим ответ
             JsonNode jsonResponse = objectMapper.readTree(response.body());
 
             if (jsonResponse.has("message")) {
-                JsonNode messageNode = jsonResponse.get("message");
-                if (messageNode.has("content")) {
-                    return messageNode.get("content").asText();
-                } else {
-                    return "// Поле 'content' отсутствует в ответе:\n" + messageNode.toString();
-                }
+                return jsonResponse.get("message").get("content").asText();
             } else {
-                return "// Поле 'message' отсутствует в ответе:\n" + response.body();
+                return "// Поле 'content' отсутствует в ответе:\n" + response.body();
             }
 
         } catch (Exception e) {
@@ -107,12 +84,21 @@ public class OllamaService {
         }
     }
 
-    /**
-     * Экранирует спецсимволы в строке для безопасной передачи в JSON
-     */
+    private String getTestingLibrary(String framework, String language) {
+        switch (language) {
+            case "Java":
+                return "JUnit 5 и Allure";
+            case "Python":
+                return "pytest и allure-pytest";
+            case "Go":
+                return "testing и testify";
+            default:
+                return "unknown library";
+        }
+    }
+
     private String escapeJsonString(String input) {
         if (input == null) return "";
-
         StringBuilder result = new StringBuilder();
         for (char c : input.toCharArray()) {
             switch (c) {
