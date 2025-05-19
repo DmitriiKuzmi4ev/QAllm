@@ -19,22 +19,23 @@ public class TestController {
     @GetMapping("/")
     public String showForm(Model model) {
         model.addAttribute("request", new TestRequest());
-        return "index";
+        return "index"; // имя Thymeleaf шаблона
     }
 
     @PostMapping("/generate")
     public String generateTest(@ModelAttribute TestRequest request, Model model) {
         System.out.println("Получен промпт: " + request.getPrompt());
 
-        // Определяем, какой фреймворк использовать
+        // Определение фреймворка
         String selectedFramework = "UI".equals(request.getTestType())
                 ? request.getFramework()
                 : request.getApiFramework();
 
-        // Генерируем тест с выбранным фреймворком
-        String generatedCode = ollamaService.generateTest(request.getPrompt(), selectedFramework);
+        // Генерация теста с учётом выбранного языка
+        String generatedCode = ollamaService.generateTestWithLanguage(
+                request.getPrompt(), selectedFramework, request.getLanguage()
+        );
 
-        // Передаём результат в шаблон
         model.addAttribute("generatedCode", generatedCode);
         return "index";
     }
